@@ -1,3 +1,5 @@
+//test 1
+
 import express, { Request, Response } from "express";
 import os from "os";
 import process from "process";
@@ -64,10 +66,11 @@ app.get("/", async (req: Request, res: Response) => {
 
   // MySQL check
   try {
+
     const mysqlConnection = await mysql.createConnection({
       host: process.env.MYSQL_HOST ?? "localhost",
       user: process.env.MYSQL_USER ?? "root",
-      password: process.env.MYSQL_PASSWORD ?? "",
+      password: process.env.MYSQL_PASSWORD ?? "root",
       database: process.env.MYSQL_DB ?? "test",
     });
 
