@@ -4,25 +4,18 @@
 
 ## stage build
 FROM node:20 as build
-
-WORKDIR /dummy-app
-
+WORKDIR /app
 COPY package*.json ./
-
 RUN npm install
-
-COPY . .
+COPY tsconfig.json ./
+COPY index.ts ./
+RUN npm run build
 
 ## stage development
 FROM build as development
-
-EXPOSE 8080
-
 CMD ["npm", "run", "develop"]
 
 ## stage production
 FROM build as production
-
-EXPOSE 8081
-
-CMD ["npm", "run", "start"]
+RUN npm install --omit=dev
+CMD ["node", "index.ts"]

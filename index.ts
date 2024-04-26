@@ -68,9 +68,9 @@ app.get("/", async (req: Request, res: Response) => {
   try {
 
     const mysqlConnection = await mysql.createConnection({
-      host: process.env.MYSQL_HOST ?? "localhost",
-      user: process.env.MYSQL_USER ?? "root",
-      password: process.env.MYSQL_PASSWORD ?? "root",
+      host: process.env.MYSQL_HOST ?? "mysql",
+      user: process.env.MYSQL_USER ?? "test",
+      password: process.env.MYSQL_PASSWORD ?? "",
       database: process.env.MYSQL_DB ?? "test",
     });
 
@@ -96,4 +96,5 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.listen(port, () => {
   console.log(`Dummy app listening on port ${port}`);
+  console.log(`Environment variables: ${(process.env["FILE_PATH_TO_CHECK"])}`);
 });

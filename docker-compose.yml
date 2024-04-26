@@ -1,35 +1,53 @@
-version: '3'
+services :
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    hostname: mydocker
+    ports:
+      - 8080:${PORT}
+    environment:
+      - PORT=${PORT}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_DB=${MYSQL_DB}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - FILE_PATH_TO_CHECK=${FILE_PATH_TO_CHECK}
+    volumes:
+      - ./dummy.txt:/app/dummy.txt
+      - ./index.ts:/app/index.ts # this is for hot reload
+    networks:
+      - db-net
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - mysql
 
-services:
-
-  mysql:
+  mysql :
     image: arm64v8/mysql
-    env_file:
-      - .env.mysql
-    ports:
-      - "3306:3306"
-
-  production:
-    hostname: mydocker
-    build: .
-    ports:
-      - "8081:8081"
     environment:
-      - PORT=8081
-    command: npm run start
-    depends_on:
-      - mysql
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+    networks:
+      - db-net
+    volumes:
+      - data:/var/lib/mysql
+    restart: unless-stopped
 
-  development:
-    hostname: mydocker
-    build: .
-    ports:
-      - "1337:1337"
-    environment:
-      - PORT=1337
-    env_file:
-      - .env.mysql
-    user: node
-    command: npm run develop
-    depends_on:
-      - mysql
+  redis:
+    image: arm64v8/redis
+    networks:
+      - db-net
+    restart: unless-stopped
+
+networks:
+  db-net:
+
+volumes:
+  data:
