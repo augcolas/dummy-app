@@ -96,5 +96,4 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.listen(port, () => {
   console.log(`Dummy app listening on port ${port}`);
-  console.log(`Environment variables: ${(process.env["FILE_PATH_TO_CHECK"])}`);
 });
